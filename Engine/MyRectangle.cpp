@@ -16,7 +16,7 @@ void MyRectangle::drawWithOffset(Graphics& gfx, const Color& color) const
 	gfx.DrawRect(int(corner.x + offset), int(corner.y + offset), int(dimensions.x - offset), int(dimensions.y - offset), color);
 }
 
-bool MyRectangle::isColliding(const MyRectangle& targetRectangle) const
+bool MyRectangle::Intersects(const MyRectangle& targetRectangle) const
 {
 	const int targetRightLimit = int(targetRectangle.corner.x + targetRectangle.dimensions.x);
 	const int targetBottomLimit = int(targetRectangle.corner.y + targetRectangle.dimensions.y);

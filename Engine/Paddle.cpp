@@ -8,7 +8,7 @@ Paddle::Paddle(const MyRectangle& rectangle) :
 void Paddle::draw(Graphics& gfx) const
 {
 	rectangle.draw(gfx, Colors::Red);
-	const float percentagePadding = rectangle.getDimensions().x * 0.2;
+	const float percentagePadding = rectangle.getDimensions().x * 0.2f;
 	const MyRectangle innerRectangle(Vec2D(rectangle.getCorner().x + percentagePadding, rectangle.getCorner().y), Vec2D(rectangle.getDimensions().x - percentagePadding * 2, rectangle.getDimensions().y));
 	innerRectangle.draw(gfx, Colors::White);
 

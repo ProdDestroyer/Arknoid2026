@@ -8,7 +8,7 @@ public:
 	MyRectangle(const Vec2D& topLeftCorner, const Vec2D& dimensions);
 	void draw(Graphics& gfx, const Color& color) const;
 	void drawWithOffset(Graphics& gfx, const Color& color) const;
-	bool isColliding(const MyRectangle& targetRectangle) const;
+	bool Intersects(const MyRectangle& targetRectangle) const;
 	const Vec2D& getCorner() const;
 	const Vec2D& getDimensions() const;
 	void moveX(const float dx);
