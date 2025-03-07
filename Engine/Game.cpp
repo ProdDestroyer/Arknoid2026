@@ -53,16 +53,12 @@ void Game::Go()
 void Game::UpdateModel(const float dt)
 {
 	paddle.move(wnd.kbd, dt);
-	ball.moveX(dt);
+	ball.move(dt);
 	bool collided = false;
 	if (checkBricksCollision()) {
-		ball.rebounceX();
-		collided = true;
-	}
-	ball.moveY(dt);
-	if (!collided && checkBricksCollision()) {
 		ball.rebounceY();
 	}
+
 	ball.intersectsPaddle(paddle.getRectangle());
 }
 

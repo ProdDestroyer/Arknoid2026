@@ -9,8 +9,7 @@ public:
 
 	const Vec2D& getCenter() const;
 	const Vec2D& getVel() const;
-	void moveX(const float dt);
-	void moveY(const float dt);
+	void move(const float dt);
 	void draw(Graphics& gfx) const;
 	MyRectangle getRectangle() const;
 	void rebounceY();

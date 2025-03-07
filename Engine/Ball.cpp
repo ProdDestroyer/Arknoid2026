@@ -19,24 +19,15 @@ const Vec2D& Ball::getVel() const
 	return vel;
 }
 
-void Ball::moveX(const float dt)
+void Ball::move(const float dt)
 {
-	center += Vec2D((vel * dt).x, 0.0f);
+	center += vel * dt;
 	Vec2D centerBeforeClamp = center;
 	Vec2D velBefore = vel;
 	center = clampX();
 	vel.x *= (getCenter() == centerBeforeClamp) ? 1 : -1;
 
-	if (vel != velBefore) {
-		soundPad.Play();
-	}
-}
-
-void Ball::moveY(const float dt)
-{
-	center += Vec2D(0.0f, (vel * dt).y);
-	Vec2D centerBeforeClamp = center;
-	Vec2D velBefore = vel;
+	centerBeforeClamp = center;
 	center = clampY();
 	vel.y *= (getCenter() == centerBeforeClamp) ? 1 : -1;
 
@@ -44,6 +35,7 @@ void Ball::moveY(const float dt)
 		soundPad.Play();
 	}
 }
+
 
 void Ball::draw(Graphics& gfx) const
 {
