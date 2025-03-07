@@ -41,3 +41,8 @@ void MyRectangle::moveX(const float dx)
 	corner.x = (corner.x > 0) ? corner.x : 0;
 }
 
+Vec2D MyRectangle::getCenter() const
+{
+	return Vec2D(corner.x + dimensions.x / 2.0f, corner.y + dimensions.y / 2.0f);
+}
+

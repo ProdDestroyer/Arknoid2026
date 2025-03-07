@@ -10,9 +10,9 @@ public:
 	Paddle(const MyRectangle& rectangle);
 	void draw(Graphics& gfx) const;
 	void move(const Keyboard& kbd, const float dt);
-
+	const MyRectangle& getRectangle() const;
 private:
 	MyRectangle rectangle;
-	static constexpr float speed = 200.0f;
+	static constexpr float speed = 300.0f;
 };
 

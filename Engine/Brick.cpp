@@ -8,5 +8,22 @@ Brick::Brick(const Vec2D& topLeftCorner, const Vec2D& dimensions, const Color& c
 
 void Brick::draw(Graphics& gfx) const
 {
-	rectangle.drawWithOffset(gfx, color);
+	if (!destroyed) {
+		rectangle.drawWithOffset(gfx, color);
+	}
+}
+
+void Brick::destroy()
+{
+	destroyed = true;
+}
+
+bool Brick::isDestroyed() const
+{
+	return destroyed;
+}
+
+const MyRectangle& Brick::getRectangle() const
+{
+	return rectangle;
 }

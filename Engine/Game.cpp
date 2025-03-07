@@ -25,8 +25,8 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	ball(Vec2D(20.0f, 20.0f), Vec2D(200.0f, 200.0f)),
-	paddle(MyRectangle(Vec2D(350,500), Vec2D(70,25)))
+	ball(Vec2D(20.0f, 20.0f), Vec2D(30.0f, 30.0f)),
+	paddle(MyRectangle(Vec2D(350, 500), Vec2D(70, 25)))
 {
 	int index = 0;
 	Vec2D dimensions(brickWidth, brickHeight);
@@ -40,19 +40,52 @@ Game::Game(MainWindow& wnd)
 void Game::Go()
 {
 	gfx.BeginFrame();
-	UpdateModel();
+	float dt = ts.getDelta();
+	while (dt > 0) {
+		const float subdt = std::min(0.0025f, dt);
+		UpdateModel(subdt);
+		dt -= subdt;
+	}
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
+void Game::UpdateModel(const float dt)
 {
-	const float dt = ts.getDelta();
 	paddle.move(wnd.kbd, dt);
-	ball.move(dt);
+	ball.moveX(dt);
+	bool collided = false;
+	if (checkBricksCollision()) {
+		ball.rebounceX();
+		collided = true;
+	}
+	ball.moveY(dt);
+	if (!collided && checkBricksCollision()) {
+		ball.rebounceY();
+	}
+	ball.intersectsPaddle(paddle.getRectangle());
 }
 
-void Game::ComposeFrame()    
+bool Game::checkBricksCollision()
+{
+	int index = -1;
+	float lessSqrdDistance = std::numeric_limits<float>::max();
+	int counter = 0;
+	for (int i = 0; i < widthInBricks * heightInBricks; i++) {
+		float currentSqrdDistance = (ball.getRectangle().getCenter() - bricks[i].getRectangle().getCenter()).lengthSqrd();
+		if (!bricks[i].isDestroyed() && ball.intersects(bricks[i].getRectangle()) && currentSqrdDistance < lessSqrdDistance) {
+			lessSqrdDistance = currentSqrdDistance;
+			index = i;
+			counter += 1;
+		}
+	}
+	if (index > -1) {
+		bricks[index].destroy();
+	}
+	return index > -1;
+}
+
+void Game::ComposeFrame()
 {
 	for (const Brick& b : bricks) {
 		b.draw(gfx);

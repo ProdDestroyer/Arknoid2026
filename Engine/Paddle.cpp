@@ -23,3 +23,8 @@ void Paddle::move(const Keyboard& kbd, const float dt)
 		rectangle.moveX(-speed * dt);
 	}
 }
+
+const MyRectangle& Paddle::getRectangle() const
+{
+	return rectangle;
+}

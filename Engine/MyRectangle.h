@@ -12,6 +12,7 @@ public:
 	const Vec2D& getCorner() const;
 	const Vec2D& getDimensions() const;
 	void moveX(const float dx);
+	Vec2D getCenter() const;
 private:
 	static constexpr int offset = 2;
 	Vec2D corner;

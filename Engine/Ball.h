@@ -9,9 +9,14 @@ public:
 
 	const Vec2D& getCenter() const;
 	const Vec2D& getVel() const;
-	void move(const float dt);
+	void moveX(const float dt);
+	void moveY(const float dt);
 	void draw(Graphics& gfx) const;
 	MyRectangle getRectangle() const;
+	void rebounceY();
+	void rebounceX();
+	bool intersects(const MyRectangle& target) const;
+	void intersectsPaddle(const MyRectangle& target);
 private:
 	static constexpr float radius = 7.0f;
 	Vec2D center;
