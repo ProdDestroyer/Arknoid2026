@@ -1,0 +1,57 @@
+#include "Ball.h"
+#include "SpriteCodex.h"
+
+Ball::Ball(Vec2D& center, Vec2D& vel) :
+	center(center),
+	vel(vel),
+	soundPad(L"Sounds\\arkpad.wav")
+{
+}
+
+const Vec2D& Ball::getCenter() const
+{
+
+	return center;
+}
+
+const Vec2D& Ball::getVel() const
+{
+	return vel;
+}
+
+void Ball::move(const float dt)
+{
+	center += vel * dt;
+	Vec2D centerBeforeClamp = center;
+	Vec2D velBefore = vel;
+	center = clampX();
+	vel.x *= (getCenter() == centerBeforeClamp) ? 1 : -1;
+	  
+	centerBeforeClamp = center;
+	center = clampY();
+	vel.y *= (getCenter() == centerBeforeClamp) ? 1 : -1;
+
+	if (vel != velBefore) {
+		soundPad.Play();
+	}
+}
+
+void Ball::draw(Graphics& gfx) const
+{
+	SpriteCodex::DrawBall(center, gfx);
+}
+
+MyRectangle Ball::getRectangle() const
+{
+	return MyRectangle(Vec2D(center.x - radius, center.y -radius), Vec2D(radius * 2.0f, radius * 2.0f));
+}
+
+Vec2D Ball::clampX()
+{
+	return (center.x - radius < 0) ? Vec2D(radius, center.y) : (center.x + radius > Graphics::ScreenWidth - 1) ? Vec2D(Graphics::ScreenWidth - 1 - radius, center.y) : center;
+}
+
+Vec2D Ball::clampY()
+{
+	return (center.y - radius < 0) ? Vec2D(center.x, radius) : (center.y + radius > Graphics::ScreenHeight - 1) ? Vec2D(center.x, Graphics::ScreenHeight - 1 - radius) : center;
+}
