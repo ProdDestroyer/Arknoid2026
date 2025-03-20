@@ -12,12 +12,18 @@ public:
 	void move(const float dt);
 	void draw(Graphics& gfx) const;
 	MyRectangle getRectangle() const;
+	void rebounce(const MyRectangle& target);
 	void rebounceY();
 	void rebounceX();
 	bool intersects(const MyRectangle& target) const;
 	void intersectsPaddle(const MyRectangle& target);
+	void putOnColdDown();
+	void removeColdDown();
 private:
+	void paddleCollisionResolution(const MyRectangle& target);
+	bool coldDown = false;
 	static constexpr float radius = 7.0f;
+	static constexpr float speed = 320.0f;
 	Vec2D center;
 	Vec2D vel;
 	Sound soundPad;

@@ -13,6 +13,6 @@ public:
 	const MyRectangle& getRectangle() const;
 private:
 	MyRectangle rectangle;
-	static constexpr float speed = 300.0f;
+	static constexpr float speed = 470.0f;
 };
 

@@ -25,8 +25,8 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	ball(Vec2D(20.0f, 20.0f), Vec2D(30.0f, 30.0f)),
-	paddle(MyRectangle(Vec2D(350, 500), Vec2D(70, 25)))
+	ball(Vec2D(200.0f, 400.0f), Vec2D(1.0f, -1.0f)),
+	paddle(MyRectangle(Vec2D(350, 500), Vec2D(70, 12.5f)))
 {
 	int index = 0;
 	Vec2D dimensions(brickWidth, brickHeight);
@@ -55,14 +55,15 @@ void Game::UpdateModel(const float dt)
 	paddle.move(wnd.kbd, dt);
 	ball.move(dt);
 	bool collided = false;
-	if (checkBricksCollision()) {
-		ball.rebounceY();
+	const int collisionIndex = checkBricksCollision();
+	if (collisionIndex > -1) {
+		ball.rebounce(bricks[collisionIndex].getRectangle());
 	}
 
 	ball.intersectsPaddle(paddle.getRectangle());
 }
 
-bool Game::checkBricksCollision()
+int Game::checkBricksCollision()
 {
 	int index = -1;
 	float lessSqrdDistance = std::numeric_limits<float>::max();
@@ -77,8 +78,10 @@ bool Game::checkBricksCollision()
 	}
 	if (index > -1) {
 		bricks[index].destroy();
+		ball.removeColdDown();
 	}
-	return index > -1;
+
+	return index;
 }
 
 void Game::ComposeFrame()

@@ -1,5 +1,6 @@
 #include "Ball.h"
 #include "SpriteCodex.h"
+#include <cmath>
 
 Ball::Ball(Vec2D& center, Vec2D& vel) :
 	center(center),
@@ -21,7 +22,7 @@ const Vec2D& Ball::getVel() const
 
 void Ball::move(const float dt)
 {
-	center += vel * dt;
+	center += vel.normalized() * dt * speed;
 	Vec2D centerBeforeClamp = center;
 	Vec2D velBefore = vel;
 	center = clampX();
@@ -32,6 +33,7 @@ void Ball::move(const float dt)
 	vel.y *= (getCenter() == centerBeforeClamp) ? 1 : -1;
 
 	if (vel != velBefore) {
+		removeColdDown();
 		soundPad.Play();
 	}
 }
@@ -39,13 +41,24 @@ void Ball::move(const float dt)
 
 void Ball::draw(Graphics& gfx) const
 {
-	gfx.DrawRect(center.x - radius, center.y - radius, radius * 2.0f, radius * 2.0f, Colors::White);
 	SpriteCodex::DrawBall(center, gfx);
 }
 
 MyRectangle Ball::getRectangle() const
 {
-	return MyRectangle(Vec2D(center.x - radius, center.y -radius), Vec2D(radius * 2.0f, radius * 2.0f));
+	return MyRectangle(Vec2D(center.x - radius, center.y - radius), Vec2D(radius * 2.0f, radius * 2.0f));
+}
+
+void Ball::rebounce(const MyRectangle& target) {
+	if ((getCenter().x > target.getCorner().x + target.getDimensions().x || getCenter().x < target.getCorner().x) && !(std::signbit(getCenter().x - target.getCenter().x) == std::signbit(vel.x))) {
+		rebounceX();
+	}
+	else if (std::signbit(getCenter().x - target.getCenter().x) == std::signbit(vel.x)) {
+		rebounceY();
+	}
+	else {
+		rebounceY();
+	}
 }
 
 void Ball::rebounceX()
@@ -66,10 +79,43 @@ bool Ball::intersects(const MyRectangle& target) const
 
 void Ball::intersectsPaddle(const MyRectangle& target)
 {
-	if (target.Intersects(getRectangle())) {
-		rebounceY();
+	if (target.Intersects(getRectangle()) && !coldDown) {
+		paddleCollisionResolution(target);
+		putOnColdDown();
 	}
+}
 
+void Ball::putOnColdDown()
+{
+	coldDown = true;
+}
+
+void Ball::removeColdDown()
+{
+	coldDown = false;
+}
+
+void Ball::paddleCollisionResolution(const MyRectangle& target)
+{
+	Vec2D referenceVec(target.getCorner().x + (target.getDimensions().x / 2.0f), target.getCorner().y);
+
+	if (getCenter().x < target.getCorner().x + (target.getDimensions().x / 2.0f)) {
+		const float deltaX = target.getCorner().x + (target.getDimensions().x / 2.0f) - getCenter().x;
+		const float xFactor = (target.getDimensions().x / 2.0f) - deltaX;
+		const float yDelta = std::max<float>(10.0f, deltaX);
+		const float yFactor = target.getCorner().y - yDelta;
+		Vec2D rebounceVector(target.getCorner().x + xFactor, yFactor);
+
+		Vec2D newVel = (rebounceVector - referenceVec).normalized();
+		this->vel = newVel;
+	}
+	else {
+		const float deltaX = target.getCorner().x + target.getDimensions().x - getCenter().x;
+		const float yDelta = std::max<float>(10.0f, deltaX);
+		const float yFactor = target.getCorner().y - yDelta;
+		Vec2D rebounceVector = (Vec2D(getCenter().x, yFactor) - referenceVec).normalized() * 100;
+		this->vel = rebounceVector;
+	}
 }
 
 Vec2D Ball::clampX()

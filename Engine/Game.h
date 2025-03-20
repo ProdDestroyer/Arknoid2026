@@ -40,7 +40,7 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel(const float dt);
-	bool checkBricksCollision();
+	int checkBricksCollision();
 	/********************************/
 	/*  User Functions              */
 	/********************************/

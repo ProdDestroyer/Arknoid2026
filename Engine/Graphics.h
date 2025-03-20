@@ -24,6 +24,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
+#include "Vec2D.h"
 
 class Graphics
 {
@@ -57,9 +58,14 @@ public:
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
 	void DrawRect(const int x, const int y, const int width, const int height, const Color& color);
-	void PutPixel( int x,int y,Color c );
+	void PutPixel( int x,int y, Color c );
+	void DrawLine(int x1, int y1, int x2, int y2, const Color& c);
+	void DrawTriangle(const int x0, const int y0, const int x1, const int y1, const int x2, const int y2, const Color& c);
+	void DrawCircleWithLines(int x, int y, int radius);
 	~Graphics();
 private:
+	void DrawLineSmallSlope(int x1, int y1, int x2, int y2, const Color& c);
+	void DrawLineBigSlope(int x1, int y1, int x2, int y2, const Color& c);
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
