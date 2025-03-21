@@ -9,7 +9,7 @@ class Paddle
 public:
 	Paddle(const MyRectangle& rectangle);
 	void draw(Graphics& gfx) const;
-	void move(const Keyboard& kbd, const float dt);
+	void move(const MyRectangle& boundaryRect, const Keyboard& kbd, const float dt);
 	const MyRectangle& getRectangle() const;
 private:
 	MyRectangle rectangle;

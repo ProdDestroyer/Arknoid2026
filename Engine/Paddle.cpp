@@ -14,13 +14,13 @@ void Paddle::draw(Graphics& gfx) const
 
 }
 
-void Paddle::move(const Keyboard& kbd, const float dt)
+void Paddle::move(const MyRectangle& boundaryRect, const Keyboard& kbd, const float dt)
 {
 	if (kbd.KeyIsPressed(VK_RIGHT)) {
-		rectangle.moveX(speed * dt);
+		rectangle.moveX(boundaryRect, speed * dt);
 	}
 	else if(kbd.KeyIsPressed(VK_LEFT)) {
-		rectangle.moveX(-speed * dt);
+		rectangle.moveX(boundaryRect, -speed * dt);
 	}
 }
 

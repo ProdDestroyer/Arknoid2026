@@ -62,6 +62,10 @@ public:
 	void DrawLine(int x1, int y1, int x2, int y2, const Color& c);
 	void DrawTriangle(const int x0, const int y0, const int x1, const int y1, const int x2, const int y2, const Color& c);
 	void DrawCircleWithLines(int x, int y, int radius);
+	void drawHalfSquareTopRight(int x1, int y1, int x2, int y2, const Color& c);
+	void drawHalfSquareBottomRight(int x1, int y1, int x2, int y2, const Color& c);
+	void drawHalfSquareTopLeft(int x1, int y1, int x2, int y2, const Color& c);
+	void drawHalfSquareBottomLeft(int x1, int y1, int x2, int y2, const Color& c);
 	~Graphics();
 private:
 	void DrawLineSmallSlope(int x1, int y1, int x2, int y2, const Color& c);

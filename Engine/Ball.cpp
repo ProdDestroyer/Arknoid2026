@@ -20,16 +20,27 @@ const Vec2D& Ball::getVel() const
 	return vel;
 }
 
-void Ball::move(const float dt)
+
+Vec2D Ball::clampX(const float x, const float width)
+{
+	return (center.x - radius < x) ? Vec2D(x + radius, center.y) : (center.x + radius > x + width - 1) ? Vec2D(x + width - 1 - radius, center.y) : center;
+}
+
+Vec2D Ball::clampY(const float y, const float height)
+{
+	return (center.y - radius < y) ? Vec2D(center.x, y + radius) : (center.y + radius > y + height - 1) ? Vec2D(center.x, y + height - 1 - radius) : center;
+}
+
+void Ball::move(const MyRectangle& boundariesRect, const float dt)
 {
 	center += vel.normalized() * dt * speed;
 	Vec2D centerBeforeClamp = center;
 	Vec2D velBefore = vel;
-	center = clampX();
+	center = clampX(boundariesRect.getCorner().x, boundariesRect.getDimensions().x);
 	vel.x *= (getCenter() == centerBeforeClamp) ? 1 : -1;
 
 	centerBeforeClamp = center;
-	center = clampY();
+	center = clampY(boundariesRect.getCorner().y, boundariesRect.getDimensions().y);
 	vel.y *= (getCenter() == centerBeforeClamp) ? 1 : -1;
 
 	if (vel != velBefore) {
@@ -116,14 +127,4 @@ void Ball::paddleCollisionResolution(const MyRectangle& target)
 		Vec2D rebounceVector = (Vec2D(getCenter().x, yFactor) - referenceVec).normalized() * 100;
 		this->vel = rebounceVector;
 	}
-}
-
-Vec2D Ball::clampX()
-{
-	return (center.x - radius < 0) ? Vec2D(radius, center.y) : (center.x + radius > Graphics::ScreenWidth - 1) ? Vec2D(Graphics::ScreenWidth - 1 - radius, center.y) : center;
-}
-
-Vec2D Ball::clampY()
-{
-	return (center.y - radius < 0) ? Vec2D(center.x, radius) : (center.y + radius > Graphics::ScreenHeight - 1) ? Vec2D(center.x, Graphics::ScreenHeight - 1 - radius) : center;
 }

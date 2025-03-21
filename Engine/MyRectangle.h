@@ -11,7 +11,7 @@ public:
 	bool Intersects(const MyRectangle& targetRectangle) const;
 	const Vec2D& getCorner() const;
 	const Vec2D& getDimensions() const;
-	void moveX(const float dx);
+	void moveX(const MyRectangle& boundaryRect, const float dx);
 	Vec2D getCenter() const;
 private:
 	static constexpr int offset = 2;

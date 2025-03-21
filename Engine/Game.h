@@ -29,6 +29,7 @@
 #include "Brick.h"
 #include "Paddle.h"
 #include "MyRectangle.h"
+#include "Border.h"
 
 class Game
 {
@@ -49,8 +50,8 @@ private:
 	Graphics gfx;
 	Ball ball;
 	TimeStamp ts;
-	static constexpr int widthInBricks = 15;
-	static constexpr int heightInBricks = 5;
+	static constexpr int widthInBricks = 10;
+	static constexpr int heightInBricks = 8;
 	static constexpr float brickWidth = 50;
 	static constexpr float brickHeight = 25;
 	static constexpr float initialX = (Graphics::ScreenWidth - widthInBricks * brickWidth) / 2;
@@ -66,6 +67,7 @@ private:
 
 	Brick bricks[widthInBricks * heightInBricks];
 	Paddle paddle;
+	Border border;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

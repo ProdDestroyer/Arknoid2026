@@ -9,7 +9,7 @@ public:
 
 	const Vec2D& getCenter() const;
 	const Vec2D& getVel() const;
-	void move(const float dt);
+	void move(const MyRectangle& boundariesRect, const float dt);
 	void draw(Graphics& gfx) const;
 	MyRectangle getRectangle() const;
 	void rebounce(const MyRectangle& target);
@@ -27,6 +27,6 @@ private:
 	Vec2D center;
 	Vec2D vel;
 	Sound soundPad;
-	Vec2D clampX();
-	Vec2D clampY();
+	Vec2D clampX(const float x, const float width);
+	Vec2D clampY(const float y, const float height);
 };

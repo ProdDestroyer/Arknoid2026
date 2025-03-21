@@ -435,6 +435,54 @@ void Graphics::DrawCircleWithLines(int x, int y, int radius)
 	}
 }
 
+void Graphics::drawHalfSquareTopRight(int x1, int y1, int x2, int y2, const Color& c)
+{
+	assert(y2 - y1 == x2 - x1);
+	int xOffset = 0;
+	for (int j = y1; j < y2; j++) {
+		for (int i = x1 + xOffset; i < x2; i++) {
+			PutPixel(i, j, c);
+		}
+		xOffset += 1;
+	}
+}
+
+void Graphics::drawHalfSquareBottomRight(int x1, int y1, int x2, int y2, const Color& c)
+{
+	assert(y2 - y1 == x2 - x1);
+	int xOffset = 0;
+	for (int j = y1; j < y2; j++) {
+		for (int i = x2 - xOffset; i < x2; i++) {
+			PutPixel(i, j, c);
+		}
+		xOffset += 1;
+	}
+}
+
+void Graphics::drawHalfSquareTopLeft(int x1, int y1, int x2, int y2, const Color& c)
+{
+	assert(y2 - y1 == x2 - x1);
+	int xOffset = 0;
+	for (int j = y1; j < y2; j++) {
+		for (int i = x1; i < x2 - xOffset; i++) {
+			PutPixel(i, j, c);
+		}
+		xOffset += 1;
+	}
+}
+
+void Graphics::drawHalfSquareBottomLeft(int x1, int y1, int x2, int y2, const Color& c)
+{
+	assert(y2 - y1 == x2 - x1);
+	int xOffset = 0;
+	for (int j = y1; j < y2; j++) {
+		for (int i = x1; i < x1 + xOffset; i++) {
+			PutPixel(i, j, c);
+		}
+		xOffset += 1;
+	}
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception
