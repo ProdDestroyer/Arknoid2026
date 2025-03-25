@@ -24,12 +24,6 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "Vec2D.h"
-#include "Ball.h"
-#include "TimeStamp.h"
-#include "Brick.h"
-#include "Paddle.h"
-#include "MyRectangle.h"
-#include "Border.h"
 
 class Game
 {
@@ -40,34 +34,13 @@ public:
 	void Go();
 private:
 	void ComposeFrame();
-	void UpdateModel(const float dt);
-	int checkBricksCollision();
+	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	Ball ball;
-	TimeStamp ts;
-	static constexpr int widthInBricks = 10;
-	static constexpr int heightInBricks = 8;
-	static constexpr float brickWidth = 50;
-	static constexpr float brickHeight = 25;
-	static constexpr float initialX = (Graphics::ScreenWidth - widthInBricks * brickWidth) / 2;
-	static constexpr float initialY = Graphics::ScreenHeight / 10;
-	static constexpr int nBodyColors = 5;
-	static constexpr Color bricksColors[nBodyColors] = {
-	{ 255, 0, 0 },   // Red
-	{ 255, 165, 0 }, // Orange
-	{ 0, 0, 255 },   // Blue
-	{ 128, 0, 128 },  // Purple
-	{0, 255, 255 } // Cyan
-	};
-
-	Brick bricks[widthInBricks * heightInBricks];
-	Paddle paddle;
-	Border border;
 	/********************************/
 	/*  User Variables              */
 	/********************************/
