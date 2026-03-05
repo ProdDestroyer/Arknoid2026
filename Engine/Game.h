@@ -24,6 +24,8 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "Vec2D.h"
+#include "GameManager.h"
+#include "TimeStamp.h"
 
 class Game
 {
@@ -41,6 +43,8 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+	GameManager gameManager;
+	TimeStamp timeStamp;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

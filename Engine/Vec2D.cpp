@@ -48,22 +48,22 @@ bool Vec2D::operator!=(const Vec2D& vec) const
 	return !(*this == vec);
 }
 
-float Vec2D::length() const
+float Vec2D::Length() const
 {
-	return std::sqrt(lengthSqrd());
+	return std::sqrt(LengthSqrd());
 }
 
-float Vec2D::lengthSqrd() const
+float Vec2D::LengthSqrd() const
 {
 	return this->x * this->x + this->y * this->y;
 }
 
-void Vec2D::normalize()
+void Vec2D::Normalize()
 {
-	*this = normalized();
+	*this = Normalized();
 }
 
-Vec2D Vec2D::normalized() const
+Vec2D Vec2D::Normalized() const
 {
-	return (this->x != 0 || this->y != 0) ? *this * (1 / length()) : *this;
+	return (this->x != 0 || this->y != 0) ? *this * (1 / Length()) : *this;
 }

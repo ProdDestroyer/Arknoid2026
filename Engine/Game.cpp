@@ -44,10 +44,12 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = timeStamp.GetDelta();
+	gameManager.Move(dt);
 }
 
 
 void Game::ComposeFrame()
 {
-
+	gameManager.Render(gfx);
 }

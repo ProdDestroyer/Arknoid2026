@@ -428,7 +428,7 @@ void Graphics::DrawCircleWithLines(int x, int y, int radius)
 	const float radiusSqrd = float(radius * radius);
 	for (int j = y - radius; j < y + radius; j++) {
 		for (int i = x - radius; i < x + radius; i++) {
-			if ((Vec2D(float(i), float(j)) - Vec2D(float(x), float(y))).lengthSqrd() == radiusSqrd) {
+			if ((Vec2D(float(i), float(j)) - Vec2D(float(x), float(y))).LengthSqrd() == radiusSqrd) {
 				DrawLine(x, y, i, j, Colors::Blue);
 			}
 		}

@@ -11,11 +11,10 @@ public:
 	Vec2D& operator-=(const Vec2D& vec);
 	bool operator==(const Vec2D& vec) const;
 	bool operator!=(const Vec2D& vec) const;
-	float length() const;
-	float lengthSqrd() const;
-	void normalize();
-	Vec2D normalized() const;
+	float Length() const;
+	float LengthSqrd() const;
+	void Normalize();
+	Vec2D Normalized() const;
 	float x;
 	float y;
-private:
 };
