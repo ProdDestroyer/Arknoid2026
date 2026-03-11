@@ -17,7 +17,7 @@ void Ball::Move(const float dt)
 
 void Ball::CheckWallsCollision()
 {
-	if (center.x + radius > Graphics::ScreenWidth) {
+	if (center.x + radius >= Graphics::ScreenWidth) {
 		center.x = Graphics::ScreenWidth - radius;
 		direction.x *= -1;
 		soundPad.Play();
@@ -28,8 +28,8 @@ void Ball::CheckWallsCollision()
 		soundPad.Play();
 	 }
 
-	if (center.y + radius > Graphics::ScreenHeight - 200) {
-		center.y = Graphics::ScreenHeight - radius - 200;
+	if (center.y + radius >= Graphics::ScreenHeight ) {
+		center.y = Graphics::ScreenHeight - radius;
 		direction.y *= -1;
 		soundPad.Play();
 	}

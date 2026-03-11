@@ -8,7 +8,7 @@ Brick::Brick(const Rectangle2D& rectangle) :
 
 void Brick::Render(Graphics& gfx) const
 {
-	rectangle.Render(gfx);
+	gfx.DrawRect(rectangle);
 }
 
 const bool Brick::isAlive() const

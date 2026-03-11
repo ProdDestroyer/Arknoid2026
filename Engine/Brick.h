@@ -1,5 +1,6 @@
 #pragma once
 #include "Rectangle2D.h"
+#include "Graphics.h"
 class Brick {
 public:
 	Brick() = default;

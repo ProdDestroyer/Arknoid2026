@@ -45,7 +45,8 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	const float dt = timeStamp.GetDelta();
-	gameManager.Move(dt);
+	const float paddleMovementDelta = (wnd.kbd.KeyIsPressed('A')) ? -dt : (wnd.kbd.KeyIsPressed('D')) ? dt : 0.0f;
+	gameManager.Move(dt, paddleMovementDelta);
 }
 
 

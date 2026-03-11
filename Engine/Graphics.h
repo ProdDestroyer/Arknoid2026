@@ -24,7 +24,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
-#include "Vec2D.h"
+#include "Rectangle2D.h"
 
 class Graphics
 {
@@ -60,6 +60,7 @@ public:
 
 	void DrawCircle(const float XCenter, const float YCenter, const float radius, const Color& c);
 	void DrawRect(const int x, const int y, const int width, const int height, const Color& color);
+	void DrawRect(const Rectangle2D& rectangle);
 	void PutPixel( int x,int y, Color c );
 	void DrawLine(int x1, int y1, int x2, int y2, const Color& c);
 	void DrawTriangle(const int x0, const int y0, const int x1, const int y1, const int x2, const int y2, const Color& c);

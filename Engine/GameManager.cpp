@@ -2,7 +2,8 @@
 #include <cmath>
 
 GameManager::GameManager() :
-	ball({ Graphics::ScreenWidth / 2.0f,  Graphics::ScreenHeight / 4.0f })
+	ball({ Graphics::ScreenWidth / 2.0f,  Graphics::ScreenHeight / 4.0f }),
+	paddle({ { Graphics::ScreenWidth / 2.0f - 20.0f, Graphics::ScreenHeight * 14.0f / 15.0f}, {40.0f, 20.0f}, Colors::Red })
 {
 	for (int j = 0; j < bricksAmountVertically; j++) {
 		for (int i = 0; i < bricksAmountHorizontally; i++) {
@@ -11,11 +12,13 @@ GameManager::GameManager() :
 	}
 }
 
-void GameManager::Move(const float dt)
+void GameManager::Move(const float dt, const float paddleMovementDelta)
 {
 	if (!gameOver) {
 		ball.Move(dt);
 		CheckBricksCollision();
+		paddle.Move(paddleMovementDelta);
+		CheckPaddleCollision();
 	}
 }
 
@@ -23,6 +26,7 @@ void GameManager::Render(Graphics& gfx)
 {
 	RenderBricks(gfx);
 	ball.Render(gfx);
+	paddle.Render(gfx);
 
 }
 
@@ -41,79 +45,84 @@ void GameManager::RenderBricks(Graphics& gfx) const
 void GameManager::CheckBricksCollision()
 {
 	for (int i = 0; i < bricksAmountVertically * bricksAmountHorizontally; i++) {
+		CheckBallRectangleCollision(bricks[i].GetRectangle());
+	}
 
-		const Vec2D currentBrickTopLeftCorner = bricks[i].GetRectangle().GetTopLeftCorner();
-		const Vec2D currentBrickTopRightCorner = Vec2D(currentBrickTopLeftCorner.x + brickWidth, currentBrickTopLeftCorner.y);
-		const Vec2D currentBrickBottomLeftCorner = Vec2D(currentBrickTopLeftCorner.x, currentBrickTopLeftCorner.y + brickHeight);
-		const Vec2D currentBrickBottomRightCorner = Vec2D(currentBrickTopRightCorner.x, currentBrickBottomLeftCorner.y);
+}
 
-		Vec2D currentBrickCorners[4] = { currentBrickTopLeftCorner, currentBrickTopRightCorner, currentBrickBottomLeftCorner, currentBrickBottomRightCorner };
-		int collisionCornerIndex = -1;
+void GameManager::CheckBallRectangleCollision(const Rectangle2D& targetRectangle)
+{
+	const Vec2D currentBrickTopLeftCorner = targetRectangle.GetTopLeftCorner();
+	const Vec2D currentBrickTopRightCorner = Vec2D(currentBrickTopLeftCorner.x + targetRectangle.GetWidth(), currentBrickTopLeftCorner.y);
+	const Vec2D currentBrickBottomLeftCorner = Vec2D(currentBrickTopLeftCorner.x, currentBrickTopLeftCorner.y + targetRectangle.GetHeight());
+	const Vec2D currentBrickBottomRightCorner = Vec2D(currentBrickTopRightCorner.x, currentBrickBottomLeftCorner.y);
 
-		for (int i = 0; i < 4; i++) {
-			float cornerToCenterXDistance = currentBrickCorners[i].x - ball.GetCenter().x;
-			float cornerToCenterYDistance = currentBrickCorners[i].y - ball.GetCenter().y;
+	Vec2D currentBrickCorners[4] = { currentBrickTopLeftCorner, currentBrickTopRightCorner, currentBrickBottomLeftCorner, currentBrickBottomRightCorner };
+	int collisionCornerIndex = -1;
 
-			collisionCornerIndex = (cornerToCenterXDistance * cornerToCenterXDistance + cornerToCenterYDistance * cornerToCenterYDistance) < Ball::radius * Ball::radius ? i : collisionCornerIndex;
-		}
+	for (int i = 0; i < 4; i++) {
+		float cornerToCenterXDistance = currentBrickCorners[i].x - ball.GetCenter().x;
+		float cornerToCenterYDistance = currentBrickCorners[i].y - ball.GetCenter().y;
 
-		if (collisionCornerIndex > -1) {
-			Vec2D ballSpeedScaled = ball.GetDirection().Normalized() * 10.0f;
-			Vec2D radarVector = ballSpeedScaled + currentBrickCorners[collisionCornerIndex];
+		collisionCornerIndex = (cornerToCenterXDistance * cornerToCenterXDistance + cornerToCenterYDistance * cornerToCenterYDistance) < Ball::radius * Ball::radius ? i : collisionCornerIndex;
+	}
 
-			const float m = (radarVector.y - currentBrickCorners[collisionCornerIndex].y) / (radarVector.x - currentBrickCorners[collisionCornerIndex].x);
-			const float d = radarVector.y - radarVector.x * m;
+	if (collisionCornerIndex > -1) {
+		Vec2D ballSpeedScaled = ball.GetDirection().Normalized() * 10.0f;
+		Vec2D radarVector = ballSpeedScaled + currentBrickCorners[collisionCornerIndex];
 
-			const float h = ball.GetCenter().x;
-			const float k = ball.GetCenter().y;
+		const float m = (radarVector.y - currentBrickCorners[collisionCornerIndex].y) / (radarVector.x - currentBrickCorners[collisionCornerIndex].x);
+		const float d = radarVector.y - radarVector.x * m;
 
-			const float a = (m * m) + 1;
-			const float b = 2 * ((m * d) - (m * k) - h);
-			const float c = ((h * h) + ((d - k) * (d - k))) - Ball::radius * Ball::radius;
+		const float h = ball.GetCenter().x;
+		const float k = ball.GetCenter().y;
 
-			const float det = (b * b) - (4 * a * c); // will never be negative, since code will execute only if brick corner is inside the ball
+		const float a = (m * m) + 1;
+		const float b = 2 * ((m * d) - (m * k) - h);
+		const float c = ((h * h) + ((d - k) * (d - k))) - Ball::radius * Ball::radius;
 
-			const float r1 = (-b + std::sqrt(det)) / (2 * a);
-			const float r2 = (-b - std::sqrt(det)) / (2 * a);
+		const float det = (b * b) - (4 * a * c); // will never be negative, since code will execute only if brick corner is inside the ball
 
-			const float targetRootX = (ball.GetDirection().x < 0) ? std::min(r1, r2) : std::max(r1, r2);
-			const float targetRootY = m * targetRootX + d;
+		const float r1 = (-b + std::sqrt(det)) / (2 * a);
+		const float r2 = (-b - std::sqrt(det)) / (2 * a);
 
-			const Vec2D reversalVector = Vec2D{ targetRootX, targetRootY } - currentBrickCorners[collisionCornerIndex];
+		const float targetRootX = (ball.GetDirection().x < 0) ? std::min(r1, r2) : std::max(r1, r2);
+		const float targetRootY = m * targetRootX + d;
 
-			ball.Shift(reversalVector);
+		const Vec2D reversalVector = Vec2D{ targetRootX, targetRootY } - currentBrickCorners[collisionCornerIndex];
 
-			const bool outsideLeft = ball.GetCenter().x < currentBrickTopLeftCorner.x && (ball.GetCenter().y < currentBrickTopLeftCorner.y || ball.GetCenter().y > currentBrickBottomLeftCorner.y);
-			const bool outsideRight = ball.GetCenter().x > currentBrickTopRightCorner.x && (ball.GetCenter().y < currentBrickTopLeftCorner.y || ball.GetCenter().y > currentBrickBottomLeftCorner.y);
-			const bool isOutside = outsideLeft || outsideRight;
-			if (!isOutside) {
-				const float ballToBrickCenterDistanceX = ball.GetCenter().x - bricks[i].GetRectangle().GetCenter().x;
-				const float ballToBrickCenterDistanceY = ball.GetCenter().y - bricks[i].GetRectangle().GetCenter().y;
-				const float colissionCornerToBrickCenterDistanceX = currentBrickCorners[collisionCornerIndex].x - bricks[i].GetRectangle().GetCenter().x;
-				const float colissionCornerToBrickCenterDistanceY = currentBrickCorners[collisionCornerIndex].y - bricks[i].GetRectangle().GetCenter().y;
+		ball.Shift(reversalVector);
 
-				CheckBricksLateralCollision(currentBrickTopLeftCorner, currentBrickBottomRightCorner, currentBrickBottomLeftCorner);
-			}
-			else {
-				switch (collisionCornerIndex) {
-				case 0:
-					ball.SetDirection({ -1,-1 });
-					break;
-				case 1:
-					ball.SetDirection({ 1,-1 });
-					break;
-				case 2:
-					ball.SetDirection({ -1,1 });
-					break;
-				case 3:
-					ball.SetDirection({ 1,1 });
-					break;
-				}
-			}
-		}
-		else {
+		const bool outsideLeft = ball.GetCenter().x < currentBrickTopLeftCorner.x && (ball.GetCenter().y < currentBrickTopLeftCorner.y || ball.GetCenter().y > currentBrickBottomLeftCorner.y);
+		const bool outsideRight = ball.GetCenter().x > currentBrickTopRightCorner.x && (ball.GetCenter().y < currentBrickTopLeftCorner.y || ball.GetCenter().y > currentBrickBottomLeftCorner.y);
+		const bool isOutside = outsideLeft || outsideRight;
+		if (!isOutside) {
+			const float ballToBrickCenterDistanceX = ball.GetCenter().x - targetRectangle.GetCenter().x;
+			const float ballToBrickCenterDistanceY = ball.GetCenter().y - targetRectangle.GetCenter().y;
+			const float colissionCornerToBrickCenterDistanceX = currentBrickCorners[collisionCornerIndex].x - targetRectangle.GetCenter().x;
+			const float colissionCornerToBrickCenterDistanceY = currentBrickCorners[collisionCornerIndex].y - targetRectangle.GetCenter().y;
+
 			CheckBricksLateralCollision(currentBrickTopLeftCorner, currentBrickBottomRightCorner, currentBrickBottomLeftCorner);
 		}
+		else {
+			switch (collisionCornerIndex) {
+			case 0:
+				ball.SetDirection({ -1,-1 });
+				break;
+			case 1:
+				ball.SetDirection({ 1,-1 });
+				break;
+			case 2:
+				ball.SetDirection({ -1,1 });
+				break;
+			case 3:
+				ball.SetDirection({ 1,1 });
+				break;
+			}
+		}
+	}
+	else {
+		CheckBricksLateralCollision(currentBrickTopLeftCorner, currentBrickBottomRightCorner, currentBrickBottomLeftCorner);
 	}
 }
 
@@ -149,5 +158,12 @@ void GameManager::CheckBricksLateralCollision(const Vec2D& currentBrickTopLeftCo
 			ball.Shift({ 0.0f, ballTopPointY - brickBottom });
 			ball.InvertYMovement();
 		}
+	}
+}
+
+void GameManager::CheckPaddleCollision() {
+	const Rectangle2D paddleRectangles[3] = { paddle.GetCentralRect(), paddle.GetLeftRect(), paddle.GetRightRect() };
+	for (int i = 0; i < 3; i++) {
+		CheckBallRectangleCollision(paddleRectangles[i]);
 	}
 }

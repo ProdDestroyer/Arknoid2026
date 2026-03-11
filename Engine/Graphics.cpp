@@ -334,6 +334,11 @@ void Graphics::DrawRect(const int x, const int y, const int width, const int hei
 	}
 }
 
+void Graphics::DrawRect(const Rectangle2D& rectangle)
+{
+	DrawRect(int(rectangle.GetTopLeftCorner().x), int(rectangle.GetTopLeftCorner().y), int(rectangle.GetWidth()), int(rectangle.GetHeight()), rectangle.GetColor());
+}
+
 void Graphics::PutPixel(int x, int y, Color c)
 {
 	assert(x >= 0);
