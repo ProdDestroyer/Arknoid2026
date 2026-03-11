@@ -15,3 +15,8 @@ const bool Brick::isAlive() const
 {
 	return alive;
 }
+
+const Rectangle2D& Brick::GetRectangle() const
+{
+	return rectangle;
+}

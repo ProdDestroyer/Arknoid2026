@@ -3,7 +3,7 @@
 
 Ball::Ball(Vec2D ballCenter) :
 	center(ballCenter),
-	direction(1.0f, -2.0f),
+	direction(Vec2D( 1.0f, 2.0f ).Normalized()),
 	soundPad(L"Sounds\\arkpad.wav")
 {
 	direction.Normalize();
@@ -28,8 +28,8 @@ void Ball::CheckWallsCollision()
 		soundPad.Play();
 	 }
 
-	if (center.y + radius > Graphics::ScreenHeight) {
-		center.y = Graphics::ScreenHeight - radius;
+	if (center.y + radius > Graphics::ScreenHeight - 200) {
+		center.y = Graphics::ScreenHeight - radius - 200;
 		direction.y *= -1;
 		soundPad.Play();
 	}
@@ -43,4 +43,34 @@ void Ball::CheckWallsCollision()
 void Ball::Render(Graphics& gfx) const
 {
 	SpriteCodex::DrawBall(center, gfx);
+}
+
+const Vec2D& Ball::GetDirection() const
+{
+	return direction;
+}
+
+const Vec2D& Ball::GetCenter() const
+{
+	return center;
+}
+
+void Ball::Shift(const Vec2D& shift)
+{
+	center += shift;
+}
+
+void Ball::InvertXMovement()
+{
+	direction.x *= -1;
+}
+
+void Ball::InvertYMovement()
+{
+	direction.y *= -1;
+}
+
+void Ball::SetDirection(const Vec2D& newDirection)
+{
+	direction = newDirection.Normalized();
 }

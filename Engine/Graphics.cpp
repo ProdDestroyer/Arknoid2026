@@ -308,6 +308,23 @@ void Graphics::BeginFrame()
 	memset(pSysBuffer, 0u, sizeof(Color) * Graphics::ScreenHeight * Graphics::ScreenWidth);
 }
 
+void Graphics::DrawCircle(const float XCenter, const float YCenter, const float radius, const Color& c)
+{
+	const int XTopLeftCorner = int(XCenter - radius);
+	const int YTopLeftCorner = int(YCenter - radius);
+	const int squareLength = int(radius * 2);
+	const int xCenter = int(XCenter);
+	const int yCenter = int(YCenter);
+
+	for (int j = YTopLeftCorner; j < YTopLeftCorner + squareLength; j++) {
+		for (int i = XTopLeftCorner; i < XTopLeftCorner + squareLength; i++) {
+			if ((i - xCenter) * (i - xCenter) + (j - yCenter) * (j - yCenter) <= radius * radius) {
+				PutPixel(i, j, c);
+			}
+		}
+	}
+}
+
 void Graphics::DrawRect(const int x, const int y, const int width, const int height, const Color& color)
 {
 	for (int j = y; j < y + height; j++) {

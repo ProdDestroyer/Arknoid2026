@@ -6,11 +6,13 @@ class GameManager {
 public:
 	GameManager();
 	void Move(const float dt);
-	void Render(Graphics& gfx) const;
+	void Render(Graphics& gfx);
 
 private:
 	void BuildBricks();
 	void RenderBricks(Graphics& gfx) const;
+	void CheckBricksCollision();
+	void CheckBricksLateralCollision(const Vec2D& currentBrickTopLeftCorner, const Vec2D& currentBrickBottomRightCorner, const Vec2D& currentBrickBottomLeftCorner);
 private:
 	Ball ball;
 	static constexpr int bricksZoneHeight = Graphics::ScreenHeight / 5;
@@ -19,9 +21,10 @@ private:
 	static constexpr float verticalMargin = Graphics::ScreenWidth / 30.0f;
 	static constexpr int bricksAmountHorizontally = 10;
 	static constexpr int bricksAmountVertically = 4;
-	static constexpr int horizontalGap = 20;
-	static constexpr int verticalGap = 15;
+	static constexpr int horizontalGap = 30;
+	static constexpr int verticalGap = 20;
 	static constexpr float brickWidth =  (bricksZoneWidth - (horizontalGap * (bricksAmountHorizontally - 1))) / bricksAmountHorizontally;
 	static constexpr float brickHeight = (bricksZoneHeight - (verticalGap * (bricksAmountVertically - 1))) / bricksAmountVertically;
 	Brick bricks[bricksAmountVertically * bricksAmountHorizontally];
+	bool gameOver = false;
 };

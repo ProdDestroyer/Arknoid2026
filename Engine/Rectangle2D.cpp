@@ -8,6 +8,11 @@ Rectangle2D::Rectangle2D(const Vec2D& topLeftCorner, const Vec2D& dimensions, co
 
 }
 
+const Vec2D& Rectangle2D::GetTopLeftCorner() const
+{
+	return topLeftCorner;
+}
+
 void Rectangle2D::Render(Graphics& gfx) const
 {
 	gfx.DrawRect(int( topLeftCorner.x ), int( topLeftCorner.y ), int( dimensions.x ), int( dimensions.y ), color);
@@ -21,4 +26,9 @@ const float Rectangle2D::GetWidth() const
 const float Rectangle2D::GetHeight() const
 {
 	return dimensions.y;
+}
+
+const Vec2D& Rectangle2D::GetCenter() const
+{
+	return Vec2D{ topLeftCorner.x + dimensions.x / 2.0f, topLeftCorner.y + dimensions.y / 2.0f};
 }

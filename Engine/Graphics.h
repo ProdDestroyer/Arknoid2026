@@ -57,6 +57,8 @@ public:
 	{
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
+
+	void DrawCircle(const float XCenter, const float YCenter, const float radius, const Color& c);
 	void DrawRect(const int x, const int y, const int width, const int height, const Color& color);
 	void PutPixel( int x,int y, Color c );
 	void DrawLine(int x1, int y1, int x2, int y2, const Color& c);
